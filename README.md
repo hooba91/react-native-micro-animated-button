@@ -42,7 +42,7 @@ type button = {
 };
 
 const defaultStyle = {
-  borderRadius: 25,
+  borderRadius: 20,
   borderWidth: 0.5,
   height: 40,
   marginBottom: 10,

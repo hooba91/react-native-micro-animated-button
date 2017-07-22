@@ -7,8 +7,7 @@ import {
   View
 } from 'react-native';
 
-import TouchableBounce
-  from 'react-native/Libraries/Components/Touchable/TouchableBounce';
+import TouchableBounce from 'react-native/Libraries/Components/Touchable/TouchableBounce';
 
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -113,21 +112,19 @@ export default class Button extends Component {
             backgroundColor: this.props.disabled
               ? this.props.disabledBackgroundColor || 'gray'
               : this.props.noFill
-                  ? this.props.backgroundColor || 'white'
-                  : this.state.error
-                      ? this.errorBbackgroundColor
-                      : this.successBackgroundColor,
+                ? this.props.backgroundColor || 'white'
+                : this.state.error
+                  ? this.errorBbackgroundColor
+                  : this.successBackgroundColor,
             borderColor: this.props.disabled
               ? this.props.disabledBackgroundColor || 'gray'
               : this.state.step === 2
-                  ? this.state.error
-                      ? this.props.errorColor ||
-                          this.props.foregroundColor ||
-                          'red'
-                      : this.props.successColor ||
-                          this.props.foregroundColor ||
-                          'green'
-                  : this.props.foregroundColor || 'black',
+                ? this.state.error
+                  ? this.props.errorColor || this.props.foregroundColor || 'red'
+                  : this.props.successColor ||
+                    this.props.foregroundColor ||
+                    'green'
+                : this.props.foregroundColor || 'black',
             flex: 0,
             justifyContent: 'center',
             transform: [
@@ -189,10 +186,11 @@ export default class Button extends Component {
     );
 
     const props = {
-      disabled: (this.state.step !== 0 && !this.props.onSecondaryPress) ||
+      disabled:
+        (this.state.step !== 0 && !this.props.onSecondaryPress) ||
         this.props.disabled,
-      onPress: (this.state.step !== 0 && this.props.onSecondaryPress) ||
-        this.press,
+      onPress:
+        (this.state.step !== 0 && this.props.onSecondaryPress) || this.press,
       children: button
     };
 
@@ -204,7 +202,7 @@ export default class Button extends Component {
 
 const styles = {
   button: {
-    borderRadius: 25,
+    borderRadius: 20,
     borderWidth: 0.5,
     height: 40,
     marginBottom: 10,
