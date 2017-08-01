@@ -2,7 +2,9 @@
 <img src="https://raw.githubusercontent.com/sonaye/react-native-micro-animated-button/master/demo.gif" width="400">
 
 # Installation
-`yarn add react-native-micro-animated-button`
+`yarn add react-native-vector-icons react-native-micro-animated-button`
+
+`react-native-vector-icons` may require native linking, see package [repository](https://github.com/oblador/react-native-vector-icons) for more details.
 
 # Definition
 ```javascript
