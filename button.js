@@ -103,6 +103,14 @@ export default class Button extends Component {
     });
   };
 
+  load = () => {
+    this.setState({ step: 1 });
+
+    Animated.spring(this.animated, { toValue: 1 }).start(animation => {
+      if (animation.finished && this.props.onLoad) this.props.onLoad();
+    });
+  };
+
   render() {
     const button = (
       <Animated.View

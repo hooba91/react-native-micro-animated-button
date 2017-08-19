@@ -27,6 +27,7 @@ type button = {
   minWidth?: number,                // default = 40
   noFill?: boolean,                 // default = false
   onError?: Function,               // default = () => null
+  onLoad?: Function,                // default = () => null
   onPress?: Function,               // default = () => null
   onReset?: Function,               // default = () => null
   onSecondaryPress?: Function,      // default = () => null
@@ -57,6 +58,7 @@ const defaultLabelStyle = {
 
 // Methods
 button.error();   // Animates button to error state
+button.load();    // Animates button to loading state
 button.reset();   // Animates button to initial/default state
 button.success(); // Animates button to success state
 ```
