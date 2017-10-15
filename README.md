@@ -41,7 +41,8 @@ type button = {
   style?: Object,                   // default = defaultStyle
   successColor?: string,            // default = green
   successIconColor?: string,        // default = white
-  successIconName: string
+  successIconName: string,
+  ionicons? boolean,                // default = false
 };
 
 const defaultStyle = {

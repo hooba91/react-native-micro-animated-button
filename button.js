@@ -9,7 +9,7 @@ import {
 
 import TouchableBounce from 'react-native/Libraries/Components/Touchable/TouchableBounce';
 
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
 export default class Button extends Component {
   state = { step: 0, error: false };
@@ -112,6 +112,8 @@ export default class Button extends Component {
   };
 
   render() {
+    const Icon = this.props.ionicons ? Ionicons : FontAwesome;
+
     const button = (
       <Animated.View
         style={[
@@ -145,39 +147,41 @@ export default class Button extends Component {
           styles.button,
           this.props.style
         ]}>
-        {this.state.step === 0 &&
+        {this.state.step === 0 && (
           <View>
-            {this.props.labelIcon
-              ? <FontAwesome
-                  color={
-                    this.props.disabled
+            {this.props.labelIcon ? (
+              <Icon
+                color={
+                  this.props.disabled
+                    ? this.props.disabledForegroundColor || 'white'
+                    : this.props.foregroundColor || 'black'
+                }
+                name={this.props.labelIcon}
+                size={this.props.iconSize || 17}
+              />
+            ) : (
+              <Text
+                style={[
+                  {
+                    color: this.props.disabled
                       ? this.props.disabledForegroundColor || 'white'
                       : this.props.foregroundColor || 'black'
-                  }
-                  name={this.props.labelIcon}
-                  size={this.props.iconSize || 17}
-                />
-              : <Text
-                  style={[
-                    {
-                      color: this.props.disabled
-                        ? this.props.disabledForegroundColor || 'white'
-                        : this.props.foregroundColor || 'black'
-                    },
-                    styles.label,
-                    this.props.labelStyle
-                  ]}>
-                  {this.props.label}
-                </Text>}
-          </View>}
+                  },
+                  styles.label,
+                  this.props.labelStyle
+                ]}>
+                {this.props.label}
+              </Text>
+            )}
+          </View>
+        )}
         {this.state.step === 1 &&
-          (this.props.renderIndicator ||
-            <ActivityIndicator
-              color={this.props.foregroundColor || 'black'}
-            />)}
+          (this.props.renderIndicator || (
+            <ActivityIndicator color={this.props.foregroundColor || 'black'} />
+          ))}
         {this.state.step === 2 &&
-          (this.props.renderIcon ||
-            <FontAwesome
+          (this.props.renderIcon || (
+            <Icon
               color={
                 this.state.error
                   ? this.props.errorIconColor || 'white'
@@ -189,7 +193,8 @@ export default class Button extends Component {
                   : this.props.successIconName
               }
               size={this.props.iconSize || 17}
-            />)}
+            />
+          ))}
       </Animated.View>
     );
 
