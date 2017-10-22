@@ -21,7 +21,7 @@ type button = {
   foregroundColor?: string,         // default = black
   iconSize?: number,                // default = 17
   label: string,
-  labelIcon?: string,               // default = <FontAwesome />
+  labelIcon?: string,               // default = icons names from FontAwesome
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
   minWidth?: number,                // default = 40
@@ -42,7 +42,7 @@ type button = {
   successColor?: string,            // default = green
   successIconColor?: string,        // default = white
   successIconName: string,
-  ionicons? boolean,                // default = false
+  iconSet? any,                     // default = FontAwesome
 };
 
 const defaultStyle = {

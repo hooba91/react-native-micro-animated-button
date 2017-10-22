@@ -9,7 +9,7 @@ import {
 
 import TouchableBounce from 'react-native/Libraries/Components/Touchable/TouchableBounce';
 
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default class Button extends Component {
   state = { step: 0, error: false };
@@ -112,7 +112,7 @@ export default class Button extends Component {
   };
 
   render() {
-    const Icon = this.props.ionicons ? Ionicons : FontAwesome;
+    const Icon = this.props.iconSet ? this.props.iconSet : FontAwesome;
 
     const button = (
       <Animated.View
