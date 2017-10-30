@@ -9,7 +9,7 @@ import {
 
 import TouchableBounce from 'react-native/Libraries/Components/Touchable/TouchableBounce';
 
-import { FontAwesome } from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default class Button extends Component {
   state = { step: 0, error: false };
