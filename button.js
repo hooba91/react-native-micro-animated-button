@@ -12,7 +12,7 @@ import TouchableBounce from 'react-native/Libraries/Components/Touchable/Touchab
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const defaultColors =
+const colors =
   Platform.OS === 'ios'
     ? {
         blue: '#007aff',
@@ -31,16 +31,16 @@ const defaultColors =
 
 export default class extends Component {
   static defaultProps = {
-    backgroundColor: defaultColors.white,
-    disabledBackgroundColor: defaultColors.gray,
-    disabledForegroundColor: defaultColors.white,
-    errorIconColor: defaultColors.white,
-    foregroundColor: defaultColors.blue,
+    backgroundColor: colors.white,
+    disabledBackgroundColor: colors.gray,
+    disabledForegroundColor: colors.white,
+    errorIconColor: colors.white,
+    foregroundColor: colors.blue,
     iconSize: 17,
     maxWidth: 240,
     minWidth: 40,
     scaleFactor: 1.1,
-    successIconColor: defaultColors.white
+    successIconColor: colors.white
   };
 
   state = { step: 0, error: false };
@@ -53,9 +53,7 @@ export default class extends Component {
     outputRange: [
       this.props.backgroundColor,
       this.props.backgroundColor,
-      this.props.successColor ||
-        this.props.foregroundColor ||
-        defaultColors.green
+      this.props.successColor || this.props.foregroundColor || colors.green
     ]
   });
 
@@ -64,7 +62,7 @@ export default class extends Component {
     outputRange: [
       this.props.backgroundColor,
       this.props.backgroundColor,
-      this.props.errorColor || this.props.foregroundColor || defaultColors.red
+      this.props.errorColor || this.props.foregroundColor || colors.red
     ]
   });
 
@@ -197,8 +195,8 @@ export default class extends Component {
               ? disabledBackgroundColor
               : step === 2
                 ? error
-                  ? errorColor || foregroundColor || defaultColors.red
-                  : successColor || foregroundColor || defaultColors.green
+                  ? errorColor || foregroundColor || colors.red
+                  : successColor || foregroundColor || colors.green
                 : foregroundColor,
             transform: [error ? { translateX: shake } : { scale }],
             width
