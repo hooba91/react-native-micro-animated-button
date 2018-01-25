@@ -57,7 +57,7 @@ export default class extends Component {
     ]
   });
 
-  errorBbackgroundColor = this.animated.interpolate({
+  errorBackgroundColor = this.animated.interpolate({
     inputRange: [0, 1, 2],
     outputRange: [
       this.props.backgroundColor,
@@ -172,7 +172,7 @@ export default class extends Component {
     const { step, error } = this.state;
 
     const {
-      errorBbackgroundColor,
+      errorBackgroundColor,
       onPress,
       scale,
       shake,
@@ -190,7 +190,7 @@ export default class extends Component {
               ? disabledBackgroundColor
               : noFill
                 ? backgroundColor
-                : error ? errorBbackgroundColor : successBackgroundColor,
+                : error ? errorBackgroundColor : successBackgroundColor,
             borderColor: disabled
               ? disabledBackgroundColor
               : step === 2
