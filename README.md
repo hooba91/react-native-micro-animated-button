@@ -25,6 +25,7 @@ type button = {
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
   minWidth?: number,                // default = 40
+  shouldExpandOnFinish?: number,    // default = false
   noFill?: boolean,                 // default = false
   onError?: Function,               // default = () => null
   onLoad?: Function,                // default = () => null
