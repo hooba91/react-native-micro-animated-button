@@ -21,7 +21,7 @@ type button = {
   errorColor: string,               // default = red
   errorIconColor?: string,          // default = white
   errorIconName: string,
-  foregroundColor?: string,         // default = black
+  foregroundColor?: string,         // default = blue
   iconSet? any,                     // default = FontAwesome
   iconSize?: number,                // default = 17
   label: string,
