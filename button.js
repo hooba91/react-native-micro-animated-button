@@ -40,7 +40,7 @@ export default class Button extends Component {
     outputRange: [
       this.props.maxWidth || 240,
       this.props.minWidth || 40,
-      this.props.minWidth || 40
+      this.props.shouldExpandOnFinish ? (this.props.maxWidth || 240) : (this.props.minWidth || 40)
     ]
   });
 
