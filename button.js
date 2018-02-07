@@ -100,7 +100,7 @@ export default class extends Component {
   };
 
   success = () => {
-    this.setState({ step: 2 }, () =>
+    this.setState({ step: 2, error: false }, () =>
       Animated.spring(this.animated, { toValue: 2 }).start(
         ({ finished }) =>
           finished && this.props.onSuccess && this.props.onSuccess()
