@@ -250,3 +250,5 @@ const styles = {
 
 export default Examples;
 ```
+
+Live demo in Expo [available here](https://expo.io/@nnals/react-native-micro-animated-button-example).
