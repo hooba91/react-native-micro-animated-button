@@ -100,7 +100,7 @@ export default class extends Component {
   };
 
   success = () => {
-    this.setState({ step: 2 }, () =>
+    this.setState({ step: 2, error: false }, () =>
       Animated.spring(this.animated, { toValue: 2 }).start(
         ({ finished }) =>
           finished && this.props.onSuccess && this.props.onSuccess()
@@ -130,14 +130,14 @@ export default class extends Component {
   };
 
   reset = () =>
-    this.setState({ step: 0 }, () =>
+    this.setState({ step: 0, error: false }, () =>
       Animated.spring(this.animated, { toValue: 0 }).start(
         ({ finished }) => finished && this.props.onReset && this.props.onReset()
       )
     );
 
   load = () =>
-    this.setState({ step: 1 }, () =>
+    this.setState({ step: 1, error: false }, () =>
       Animated.spring(this.animated, { toValue: 1 }).start(
         ({ finished }) => finished && this.props.onLoad && this.props.onLoad()
       )
