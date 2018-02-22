@@ -73,7 +73,7 @@ button.success(); // Animates button to success state
 
 ```javascript
 import React, { Component } from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, ScrollView, Text, View } from 'react-native';
 
 import Button from 'react-native-micro-animated-button';
 
@@ -231,13 +231,13 @@ class Example5 extends Component {
 }
 
 const Examples = () => (
-  <View style={styles.landing}>
+  <ScrollView contentContainerStyle={styles.landing}>
     <Example1 />
     <Example2 />
     <Example3 />
     <Example4 />
     <Example5 />
-  </View>
+  </ScrollView>
 );
 
 const styles = {
