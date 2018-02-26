@@ -68,13 +68,7 @@ export default class extends Component {
   componentWillReceiveProps(nextProps) {
     const { disabled } = this.props;
 
-    if (nextProps.disabled !== disabled)
-      this.setState({ step: disabled ? 1 : 0, error: false }, () =>
-        Animated.timing(this.animated, {
-          toValue: disabled ? 1 : 0,
-          duration: 250
-        }).start()
-      );
+    if (nextProps.disabled !== disabled) this.disable(disabled);
   }
 
   successBackgroundColor = this.animated.interpolate({
@@ -157,63 +151,62 @@ export default class extends Component {
     outputRange: [1, this.props.scaleFactor]
   });
 
-  onPress = () => {
-    if (this.props.static) {
-      if (this.props.onPress) this.props.onPress();
-    } else
-      this.setState({ step: 2 }, () =>
-        Animated.spring(this.animated, { toValue: 2 }).start(
-          ({ finished }) =>
-            finished && this.props.onPress && this.props.onPress()
-        )
-      );
+  animate = (step, { cb, error = false, timing = false, micro } = {}) => {
+    this.setState({ step, error }, () =>
+      (timing ? Animated.timing : Animated.spring)(this.animated, {
+        toValue: step,
+        ...(timing ? { duration: 250 } : {})
+      }).start(({ finished }) => finished && cb && cb())
+    );
+
+    if (micro) micro();
   };
 
-  success = () => {
-    this.setState({ step: 3, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 3 }).start(
-        ({ finished }) =>
-          finished && this.props.onSuccess && this.props.onSuccess()
-      )
-    );
+  microScale = () =>
+    this.props.scaleOnSuccess &&
+    Animated.sequence([
+      Animated.timing(this.micro, { toValue: 1, duration: 80 }),
+      Animated.timing(this.micro, { toValue: 0, duration: 80 })
+    ]).start();
 
-    if (this.props.scaleOnSuccess)
-      Animated.sequence([
-        Animated.timing(this.micro, { toValue: 1, duration: 80 }),
-        Animated.timing(this.micro, { toValue: 0, duration: 80 })
-      ]).start();
-  };
+  microShake = () =>
+    this.props.shakeOnError &&
+    Animated.sequence([
+      Animated.timing(this.micro, { toValue: 0, duration: 40 }),
+      Animated.timing(this.micro, { toValue: 2, duration: 40 }),
+      Animated.timing(this.micro, { toValue: 0, duration: 40 })
+    ]).start();
 
-  error = () => {
-    this.setState({ step: 3, error: true }, () =>
-      Animated.spring(this.animated, { toValue: 3 }).start(
-        ({ finished }) => finished && this.props.onError && this.props.onError()
-      )
-    );
+  disable = disabled => this.animate(disabled ? 1 : 0, { timing: true });
 
-    if (this.props.shakeOnError)
-      Animated.sequence([
-        Animated.timing(this.micro, { toValue: 0, duration: 40 }),
-        Animated.timing(this.micro, { toValue: 2, duration: 40 }),
-        Animated.timing(this.micro, { toValue: 0, duration: 40 })
-      ]).start();
-  };
+  reset = () => this.animate(1, { cb: this.props.onReset });
 
-  reset = () =>
-    this.setState({ step: 1, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 1 }).start(
-        ({ finished }) => finished && this.props.onReset && this.props.onReset()
-      )
-    );
+  onPress = () =>
+    this.props.static && this.props.onPress
+      ? this.props.onPress()
+      : this.animate(2, { cb: this.props.onPress });
 
-  load = () =>
-    this.setState({ step: 2, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 2 }).start(
-        ({ finished }) => finished && this.props.onLoad && this.props.onLoad()
-      )
-    );
+  load = () => this.animate(2, { cb: this.props.onLoad });
+
+  success = () =>
+    this.animate(3, { cb: this.props.onSuccess, micro: this.microScale });
+
+  error = () =>
+    this.animate(3, {
+      cb: this.props.onError,
+      error: true,
+      micro: this.microShake
+    });
 
   Icon = Animated.createAnimatedComponent(this.props.iconSet || FontAwesome);
+
+  renderIcon = (name, color) => (
+    <this.Icon
+      name={name}
+      size={this.props.iconSize}
+      style={[{ color }, this.props.iconStyle]}
+    />
+  );
 
   render() {
     const {
@@ -223,8 +216,6 @@ export default class extends Component {
       errorIcon,
       foregroundColor,
       icon,
-      iconSize,
-      iconStyle,
       label,
       labelStyle,
       noRadius,
@@ -242,7 +233,6 @@ export default class extends Component {
     const {
       errorBackgroundColor,
       errorForegroundColor,
-      Icon,
       onPress,
       scale,
       shake,
@@ -259,37 +249,33 @@ export default class extends Component {
       ? errorForegroundColor
       : successForegroundColor;
 
+    const buttonStyle = [
+      {
+        backgroundColor: AnimatedBackgroundColor,
+        borderColor: AnimatedForegroundColor,
+        transform: [error ? { translateX: shake } : { scale }],
+        width
+      },
+      styles.button,
+      noRadius && { borderRadius: 0 },
+      style
+    ];
+
+    const newLabelStyle = [
+      { color: AnimatedForegroundColor },
+      styles.label,
+      labelStyle
+    ];
+
     const button = (
-      <Animated.View
-        style={[
-          {
-            backgroundColor: AnimatedBackgroundColor,
-            borderColor: AnimatedForegroundColor,
-            transform: [error ? { translateX: shake } : { scale }],
-            width
-          },
-          styles.button,
-          noRadius && { borderRadius: 0 },
-          style
-        ]}>
+      <Animated.View style={buttonStyle}>
         {(step === 0 || step === 1) && (
           <View>
             {renderLabel ||
               (icon ? (
-                <Icon
-                  name={icon}
-                  size={iconSize}
-                  style={[{ color: AnimatedForegroundColor }, iconStyle]}
-                />
+                this.renderIcon(icon, AnimatedForegroundColor)
               ) : (
-                <Animated.Text
-                  style={[
-                    { color: AnimatedForegroundColor },
-                    styles.label,
-                    labelStyle
-                  ]}>
-                  {label}
-                </Animated.Text>
+                <Animated.Text style={newLabelStyle}>{label}</Animated.Text>
               ))}
           </View>
         )}
@@ -301,20 +287,10 @@ export default class extends Component {
 
         {step === 3 &&
           (error
-            ? renderErrorIcon || (
-                <Icon
-                  name={errorIcon}
-                  size={iconSize}
-                  style={[{ color: errorForegroundColor }, iconStyle]}
-                />
-              )
-            : renderSuccessIcon || (
-                <Icon
-                  name={successIcon}
-                  size={iconSize}
-                  style={[{ color: successForegroundColor }, iconStyle]}
-                />
-              ))}
+            ? renderErrorIcon ||
+              this.renderIcon(errorIcon, errorForegroundColor)
+            : renderSuccessIcon ||
+              this.renderIcon(successIcon, successForegroundColor))}
       </Animated.View>
     );
 
@@ -322,7 +298,7 @@ export default class extends Component {
       children: button,
       disabled: step === 2 || (step === 3 && !onSecondaryPress) || disabled,
       onPress: (step === 3 && onSecondaryPress) || onPress,
-      ...(bounce ? {} : { activeOpacity })
+      ...(!bounce ? { activeOpacity } : {})
     };
 
     if (bounce) return <TouchableBounce {...props} />;
