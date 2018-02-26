@@ -6,7 +6,7 @@
 
 `yarn add react-native-vector-icons react-native-micro-animated-button`
 
-`react-native-vector-icons` may require native linking, see package [repository](https://github.com/oblador/react-native-vector-icons) for more details.
+`react-native-vector-icons` may require native linking, see package [repository](https://github.com/oblador/react-native-vector-icons) for more details (not needed if using Expo).
 
 # Definition
 
