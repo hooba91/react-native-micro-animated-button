@@ -31,6 +31,7 @@ type button = {
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
   minWidth?: number,                // default = 40
+  noFill?: boolean,                 // default = false
   noRadius?: boolean,               // default = false
   onError?: Function,               // default = () => null
   onLoad?: Function,                // default = () => null
@@ -218,6 +219,7 @@ class Example5 extends Component {
         <Btn
           foregroundColor={colors.blue}
           icon="cloud-download"
+          noFill
           onPress={() =>
             this.setState({ clicked: true }, () => this.b8.success())
           }
