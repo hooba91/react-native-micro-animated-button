@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   Animated,
   Platform,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -31,49 +30,108 @@ const colors =
 
 export default class extends Component {
   static defaultProps = {
-    backgroundColor: colors.white,
-    disabledBackgroundColor: colors.gray,
-    disabledForegroundColor: colors.white,
-    errorIconColor: colors.white,
-    foregroundColor: colors.blue,
+    errorIcon: 'warning',
     iconSize: 17,
     maxWidth: 240,
     minWidth: 40,
     scaleFactor: 1.1,
-    successIconColor: colors.white
+    successIcon: 'check'
   };
 
-  state = { step: 0, error: false };
+  state = { step: 1, error: false };
 
-  animated = new Animated.Value(0);
+  componentWillMount() {
+    if (this.props.disabled) this.setState({ step: 0 });
+
+    this.deprecate('errorColor', 'errorBackgroundColor');
+    this.deprecate('errorIconColor', 'errorForegroundColor');
+    this.deprecate('errorIconName', 'errorIcon');
+    this.deprecate('labelIcon', 'icon');
+    this.deprecate('noFill');
+    this.deprecate('renderIcon', 'renderErrorIcon and renderSuccessIcon');
+    this.deprecate('shouldExpandOnFinish', 'expandOnFinish');
+    this.deprecate('successColor', 'successBackgroundColor');
+    this.deprecate('successIconColor', 'successForegroundColor');
+    this.deprecate('successIconName', 'successIcon');
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.disabled && !this.props.disabled)
+      this.setState({ step: 0, error: false }, () =>
+        Animated.timing(this.animated, { toValue: 0, duration: 250 }).start()
+      );
+
+    if (!nextProps.disabled && this.props.disabled)
+      this.setState({ step: 1, error: false }, () =>
+        Animated.timing(this.animated, { toValue: 1, duration: 250 }).start()
+      );
+  }
+
+  deprecate = (prop, newProp) => {
+    if (this.props[prop])
+      console.warn(
+        `${prop} has been deprecated${newProp ? ` use ${newProp}` : ''}`
+      );
+  };
+
+  animated = new Animated.Value(this.props.disabled ? 0 : 1);
   micro = new Animated.Value(0);
 
   successBackgroundColor = this.animated.interpolate({
-    inputRange: [0, 1, 2],
+    inputRange: [0, 1, 2, 3],
     outputRange: [
-      this.props.backgroundColor,
-      this.props.backgroundColor,
-      this.props.successColor || this.props.foregroundColor || colors.green
+      this.props.disabledBackgroundColor || colors.white,
+      this.props.backgroundColor || colors.white,
+      this.props.backgroundColor || colors.white,
+      this.props.successBackgroundColor ||
+        this.props.foregroundColor ||
+        colors.green
     ]
   });
 
   errorBackgroundColor = this.animated.interpolate({
-    inputRange: [0, 1, 2],
+    inputRange: [0, 1, 2, 3],
     outputRange: [
-      this.props.backgroundColor,
-      this.props.backgroundColor,
-      this.props.errorColor || this.props.foregroundColor || colors.red
+      this.props.disabledBackgroundColor || colors.white,
+      this.props.backgroundColor || colors.white,
+      this.props.backgroundColor || colors.white,
+      this.props.errorBackgroundColor ||
+        this.props.foregroundColor ||
+        colors.red
+    ]
+  });
+
+  successForegroundColor = this.animated.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: [
+      this.props.disabledForegroundColor || colors.gray,
+      this.props.foregroundColor || colors.blue,
+      this.props.foregroundColor || colors.blue,
+      this.props.successForegroundColor ||
+        this.props.backgroundColor ||
+        colors.white
+    ]
+  });
+
+  errorForegroundColor = this.animated.interpolate({
+    inputRange: [0, 1, 2, 3],
+    outputRange: [
+      this.props.disabledForegroundColor || colors.gray,
+      this.props.foregroundColor || colors.blue,
+      this.props.foregroundColor || colors.blue,
+      this.props.errorForegroundColor ||
+        this.props.backgroundColor ||
+        colors.white
     ]
   });
 
   width = this.animated.interpolate({
-    inputRange: [0, 1, 2],
+    inputRange: [0, 1, 2, 3],
     outputRange: [
       this.props.maxWidth,
+      this.props.maxWidth,
       this.props.minWidth,
-      this.props.shouldExpandOnFinish
-        ? this.props.maxWidth
-        : this.props.minWidth
+      this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth
     ]
   });
 
@@ -91,8 +149,8 @@ export default class extends Component {
     if (this.props.static) {
       if (this.props.onPress) this.props.onPress();
     } else
-      this.setState({ step: 1 }, () =>
-        Animated.spring(this.animated, { toValue: 1 }).start(
+      this.setState({ step: 2 }, () =>
+        Animated.spring(this.animated, { toValue: 2 }).start(
           ({ finished }) =>
             finished && this.props.onPress && this.props.onPress()
         )
@@ -100,8 +158,8 @@ export default class extends Component {
   };
 
   success = () => {
-    this.setState({ step: 2, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 2 }).start(
+    this.setState({ step: 3, error: false }, () =>
+      Animated.spring(this.animated, { toValue: 3 }).start(
         ({ finished }) =>
           finished && this.props.onSuccess && this.props.onSuccess()
       )
@@ -115,8 +173,8 @@ export default class extends Component {
   };
 
   error = () => {
-    this.setState({ step: 2, error: true }, () =>
-      Animated.spring(this.animated, { toValue: 2 }).start(
+    this.setState({ step: 3, error: true }, () =>
+      Animated.spring(this.animated, { toValue: 3 }).start(
         ({ finished }) => finished && this.props.onError && this.props.onError()
       )
     );
@@ -130,119 +188,134 @@ export default class extends Component {
   };
 
   reset = () =>
-    this.setState({ step: 0, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 0 }).start(
+    this.setState({ step: 1, error: false }, () =>
+      Animated.spring(this.animated, { toValue: 1 }).start(
         ({ finished }) => finished && this.props.onReset && this.props.onReset()
       )
     );
 
   load = () =>
-    this.setState({ step: 1, error: false }, () =>
-      Animated.spring(this.animated, { toValue: 1 }).start(
+    this.setState({ step: 2, error: false }, () =>
+      Animated.spring(this.animated, { toValue: 2 }).start(
         ({ finished }) => finished && this.props.onLoad && this.props.onLoad()
       )
     );
 
+  Icon = Animated.createAnimatedComponent(this.props.iconSet || FontAwesome);
+
   render() {
     const {
-      backgroundColor,
+      activeOpacity,
       bounce,
       disabled,
-      disabledBackgroundColor,
-      disabledForegroundColor,
-      errorColor,
-      errorIconColor,
-      errorIconName,
+      errorIcon,
       foregroundColor,
-      iconSet,
+      icon,
       iconSize,
+      iconStyle,
       label,
-      labelIcon,
       labelStyle,
-      noFill,
+      noRadius,
       onSecondaryPress,
-      renderIcon,
+      renderErrorIcon,
       renderIndicator,
+      renderLabel,
+      renderSuccessIcon,
       style,
-      successColor,
-      successIconColor,
-      successIconName
+      successIcon
     } = this.props;
 
     const { step, error } = this.state;
 
     const {
       errorBackgroundColor,
+      errorForegroundColor,
+      Icon,
       onPress,
       scale,
       shake,
       successBackgroundColor,
+      successForegroundColor,
       width
     } = this;
-
-    const Icon = iconSet || FontAwesome;
 
     const button = (
       <Animated.View
         style={[
           {
-            backgroundColor: disabled
-              ? disabledBackgroundColor
-              : noFill
-                ? backgroundColor
-                : error ? errorBackgroundColor : successBackgroundColor,
-            borderColor: disabled
-              ? disabledBackgroundColor
-              : step === 2
-                ? error
-                  ? errorColor || foregroundColor || colors.red
-                  : successColor || foregroundColor || colors.green
-                : foregroundColor,
+            backgroundColor: error
+              ? errorBackgroundColor
+              : successBackgroundColor,
+            borderColor: error ? errorForegroundColor : successForegroundColor,
             transform: [error ? { translateX: shake } : { scale }],
             width
           },
           styles.button,
+          noRadius && { borderRadius: 0 },
           style
         ]}>
-        {step === 0 && (
+        {step < 2 && (
           <View>
-            {labelIcon ? (
-              <Icon
-                color={disabled ? disabledForegroundColor : foregroundColor}
-                name={labelIcon}
-                size={iconSize}
-              />
-            ) : (
-              <Text
-                style={[
-                  {
-                    color: disabled ? disabledForegroundColor : foregroundColor
-                  },
-                  styles.label,
-                  labelStyle
-                ]}>
-                {label}
-              </Text>
-            )}
+            {renderLabel ||
+              (icon ? (
+                <Icon
+                  name={icon}
+                  size={iconSize}
+                  style={[
+                    {
+                      color: error
+                        ? errorForegroundColor
+                        : successForegroundColor
+                    },
+                    iconStyle
+                  ]}
+                />
+              ) : (
+                <Animated.Text
+                  style={[
+                    {
+                      color: error
+                        ? errorForegroundColor
+                        : successForegroundColor
+                    },
+                    styles.label,
+                    labelStyle
+                  ]}>
+                  {label}
+                </Animated.Text>
+              ))}
           </View>
         )}
-        {step === 1 &&
-          (renderIndicator || <ActivityIndicator color={foregroundColor} />)}
+
         {step === 2 &&
-          (renderIcon || (
-            <Icon
-              color={error ? errorIconColor : successIconColor}
-              name={error ? errorIconName : successIconName}
-              size={iconSize}
-            />
+          (renderIndicator || (
+            <ActivityIndicator color={foregroundColor || colors.blue} />
           ))}
+
+        {step === 3 &&
+          (error
+            ? renderErrorIcon || (
+                <Icon
+                  name={errorIcon}
+                  size={iconSize}
+                  style={[{ color: errorForegroundColor }, iconStyle]}
+                />
+              )
+            : renderSuccessIcon || (
+                <Icon
+                  name={successIcon}
+                  size={iconSize}
+                  style={[{ color: successForegroundColor }, iconStyle]}
+                />
+              ))}
       </Animated.View>
     );
 
     const props = {
-      disabled: step === 1 || (step === 2 && !onSecondaryPress) || disabled,
-      onPress: (step === 2 && onSecondaryPress) || onPress,
-      children: button
+      children: button,
+      disabled: step === 2 || (step === 3 && !onSecondaryPress) || disabled,
+      onPress: (step === 3 && onSecondaryPress) || onPress,
+      ...(bounce ? {} : { activeOpacity })
     };
 
     if (bounce) return <TouchableBounce {...props} />;
@@ -254,11 +327,14 @@ export default class extends Component {
 const styles = {
   button: {
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 40 / 2,
     borderWidth: 1,
     height: 40,
     justifyContent: 'center',
     marginVertical: 10
   },
-  label: { padding: 9 }
+  label: {
+    backgroundColor: 'transparent',
+    padding: 10
+  }
 };

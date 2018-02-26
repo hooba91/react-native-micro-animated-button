@@ -12,46 +12,49 @@
 
 ```javascript
 type button = {
-  activeOpacity?: number,           // default = 1
+  activeOpacity?: number,
   backgroundColor?: string,         // default = white
   bounce?: boolean,                 // default = false
   disabled?: boolean,               // default = false
   disabledBackgroundColor: string,  // default = gray
   disabledForegroundColor: string,  // default = white
-  errorColor: string,               // default = red
-  errorIconColor?: string,          // default = white
-  errorIconName: string,
+  errorBackgroundColor: string,     // default = red
+  errorForegroundColor?: string,    // default = white
+  errorIcon: string,
+  expandOnFinish?: boolean,         // default = false
   foregroundColor?: string,         // default = blue
+  icon?: string,                    // default = icons names from FontAwesome
   iconSet? any,                     // default = FontAwesome
   iconSize?: number,                // default = 17
+  iconStyle?: Object,
   label: string,
-  labelIcon?: string,               // default = icons names from FontAwesome
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
   minWidth?: number,                // default = 40
-  noFill?: boolean,                 // default = false
+  noRadius?: boolean,               // default = false
   onError?: Function,               // default = () => null
   onLoad?: Function,                // default = () => null
   onPress?: Function,               // default = () => null
   onReset?: Function,               // default = () => null
   onSecondaryPress?: Function,      // default = () => null
   onSuccess?: Function,             // default = () => null
-  renderIcon?: any,                 // default = <FontAwesome />
+  renderErrorIcon?: any,            // default = <FontAwesome />
   renderIndicator?: any,            // default = <ActivityIndicator />
+  renderLabel?: any,                // default = <Text />
+  renderSuccessIcon?: any,          // default = <FontAwesome />
   scaleFactor?: number,             // default = 1.1
   scaleOnSuccess?: boolean,         // default = false
   shakeOnError?: boolean,           // default = false
-  shouldExpandOnFinish?: boolean,   // default = false
   static?: boolean,                 // default = false
   style?: Object,                   // default = defaultStyle
-  successColor?: string,            // default = green
-  successIconColor?: string,        // default = white
-  successIconName: string,
+  successBackgroundColor?: string,  // default = green
+  successForegroundColor?: string   // default = white
+  successIcon: string,
 };
 
 const defaultStyle = {
   alignItems: 'center',
-  borderRadius: 20,
+  borderRadius: 40 / 2,
   borderWidth: 1,
   height: 40,
   justifyContent: 'center',
@@ -59,7 +62,8 @@ const defaultStyle = {
 };
 
 const defaultLabelStyle = {
-  padding: 9
+  backgroundColor: 'transparent',
+  padding: 10
 };
 
 // methods
@@ -73,9 +77,11 @@ button.success(); // Animates button to success state
 
 ```javascript
 import React, { Component } from 'react';
-import { Platform, ScrollView, Text, View } from 'react-native';
+import { Platform, ScrollView, StatusBar, Text, View } from 'react-native';
 
-import Button from 'react-native-micro-animated-button';
+import Btn from 'react-native-micro-animated-button';
+
+StatusBar.setHidden(true, 'fade');
 
 const colors =
   Platform.OS === 'ios'
@@ -96,107 +102,112 @@ const colors =
 
 const Example1 = () => (
   <View style={styles.center}>
-    <Button
+    <Btn
       foregroundColor={colors.green}
       label="Submit"
       onPress={() => this.b1.success()}
       ref={ref => (this.b1 = ref)}
-      successIconName="check"
+      successIcon="check"
     />
 
-    <Button
+    <Btn
       foregroundColor={colors.blue}
       label="Retweet"
       onPress={() => this.b2.success()}
       ref={ref => (this.b2 = ref)}
-      successIconName="retweet"
+      successIcon="retweet"
     />
 
-    <Button
+    <Btn
       foregroundColor={colors.red}
       label="Favorite"
       onPress={() => this.b3.success()}
       ref={ref => (this.b3 = ref)}
-      successIconName="heart"
+      successIcon="heart"
     />
   </View>
 );
 
 const Example2 = () => (
   <View style={styles.center}>
-    <Button
-      errorColor={colors.red}
-      errorIconName="thumbs-down"
+    <Btn
+      errorBackgroundColor={colors.red}
+      errorIcon="thumbs-down"
+      expandOnFinish
       foregroundColor={colors.blue}
       label="Am I even?"
       onPress={() =>
         new Date().getSeconds() % 2 === 0 ? this.b4.success() : this.b4.error()
       }
       ref={ref => (this.b4 = ref)}
-      successColor={colors.green}
-      successIconName="thumbs-up"
-      shouldExpandOnFinish
+      successBackgroundColor={colors.green}
+      successIcon="thumbs-up"
     />
 
-    <Button
-      errorColor={colors.red}
-      errorIconName="thumbs-down"
+    <Btn
+      errorBackgroundColor={colors.red}
+      errorIcon="thumbs-down"
+      expandOnFinish
       foregroundColor={colors.blue}
       label="Am I even?"
       onPress={() =>
         new Date().getSeconds() % 2 === 0 ? this.b5.success() : this.b5.error()
       }
       ref={ref => (this.b5 = ref)}
-      successColor={colors.green}
-      successIconName="thumbs-up"
-      shouldExpandOnFinish
+      successBackgroundColor={colors.green}
+      successIcon="thumbs-up"
     />
   </View>
 );
 
 const Example3 = () => (
   <View style={styles.center}>
-    <Button
+    <Btn
       backgroundColor={colors.blue}
-      errorColor={colors.red}
-      errorIconName="warning"
+      errorBackgroundColor={colors.red}
+      errorForegroundColor={colors.white}
+      errorIcon="warning"
       foregroundColor={colors.white}
       label="Simulate an error"
       onPress={() => this.b6.error()}
       ref={ref => (this.b6 = ref)}
       shakeOnError
-      style={styles.noRadius}
     />
 
-    <Button
+    <Btn
       backgroundColor={colors.blue}
       foregroundColor={colors.white}
       label="Smile at me"
       onPress={() => this.b7.success()}
       ref={ref => (this.b7 = ref)}
       scaleOnSuccess
-      style={styles.noRadius}
-      successColor={colors.green}
-      successIconName="smile-o"
+      successBackgroundColor={colors.green}
+      successForegroundColor={colors.white}
+      successIcon="smile-o"
     />
   </View>
 );
 
-const Example4 = () => (
-  <View style={styles.center}>
-    <Button disabled label="Disabled Button" style={styles.noRadius} />
+class Example4 extends Component {
+  state = { disabled: true };
 
-    <Button
-      activeOpacity={0.5}
-      backgroundColor={colors.blue}
-      foregroundColor={colors.white}
-      label="Static Button"
-      onPress={() => null}
-      static
-      style={styles.noRadius}
-    />
-  </View>
-);
+  render() {
+    return (
+      <View style={styles.center}>
+        <Btn disabled={this.state.disabled} label="Disabled Button" noRadius />
+
+        <Btn
+          backgroundColor={colors.blue}
+          foregroundColor={colors.white}
+          label="Static Button"
+          noRadius
+          onPress={() => this.setState({ disabled: !this.state.disabled })}
+          static
+        />
+      </View>
+    );
+  }
+}
 
 class Example5 extends Component {
   state = { clicked: false };
@@ -204,11 +215,9 @@ class Example5 extends Component {
   render() {
     return (
       <View style={styles.row}>
-        <Button
-          activeOpacity={0.5}
+        <Btn
           foregroundColor={colors.blue}
-          labelIcon="cloud-download"
-          noFill
+          icon="cloud-download"
           onPress={() =>
             this.setState({ clicked: true }, () => this.b8.success())
           }
@@ -216,10 +225,8 @@ class Example5 extends Component {
             this.setState({ clicked: false }, () => this.b8.reset())
           }
           ref={ref => (this.b8 = ref)}
-          style={styles.noRadius}
-          successColor={colors.blue}
-          successIconColor={colors.blue}
-          successIconName="remove"
+          successBackgroundColor={colors.blue}
+          successIcon="remove"
         />
 
         {this.state.clicked && (
@@ -231,7 +238,7 @@ class Example5 extends Component {
 }
 
 const Examples = () => (
-  <ScrollView contentContainerStyle={styles.landing}>
+  <ScrollView contentContainerStyle={styles.full}>
     <Example1 />
     <Example2 />
     <Example3 />
@@ -242,8 +249,7 @@ const Examples = () => (
 
 const styles = {
   center: { alignItems: 'center' },
-  landing: { flex: 1, justifyContent: 'center' },
-  noRadius: { borderRadius: 0 },
+  full: { flex: 1 },
   rightText: { color: colors.blue, marginLeft: 10 },
   row: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }
 };
