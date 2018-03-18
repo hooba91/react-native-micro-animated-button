@@ -39,11 +39,22 @@ export default class extends Component {
   };
 
   state = {
-    step: this.props.disabled ? 0 : 1,
-    error: false
+    step: this.props.disabled
+      ? 0
+      : ['success', 'error'].includes(this.props.initialState)
+        ? 3
+        : this.props.initialState === 'loading' ? 2 : 1,
+    error: this.props.initialState === 'error'
   };
 
-  animated = new Animated.Value(this.props.disabled ? 0 : 1);
+  animated = new Animated.Value(
+    this.props.disabled
+      ? 0
+      : ['success', 'error'].includes(this.props.initialState)
+        ? 3
+        : this.props.initialState === 'loading' ? 2 : 1
+  );
+
   micro = new Animated.Value(0);
 
   deprecate = (prop, newProp) => {

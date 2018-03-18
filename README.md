@@ -27,6 +27,7 @@ type button = {
   iconSet? any,                     // default = FontAwesome
   iconSize?: number,                // default = 17
   iconStyle?: Object,
+  initialState?: string,            // default = null, can have values ['success', 'error', 'loading']
   label: string,
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
@@ -170,6 +171,7 @@ const Example3 = () => (
       errorIcon="warning"
       foregroundColor={colors.white}
       label="Simulate an error"
+      minWidth={240}
       onPress={() => this.b6.error()}
       ref={ref => (this.b6 = ref)}
       shakeOnError
@@ -179,6 +181,7 @@ const Example3 = () => (
       backgroundColor={colors.blue}
       foregroundColor={colors.white}
       label="Smile at me"
+      minWidth={240}
       onPress={() => this.b7.success()}
       ref={ref => (this.b7 = ref)}
       scaleOnSuccess
