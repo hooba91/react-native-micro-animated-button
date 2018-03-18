@@ -1,6 +1,6 @@
 {
   "name": "react-native-micro-animated-button",
-  "description": "An animated button component for React Native.",
+  "description": "A stateful button component for React Native.",
   "version": "0.0.20",
   "main": "button.js",
   "repository": {
