@@ -193,8 +193,8 @@ export default class extends Component {
   reset = () => this.animate(1, { cb: this.props.onReset });
 
   onPress = () =>
-    this.props.static && this.props.onPress
-      ? this.props.onPress()
+    this.props.static
+      ? this.props.onPress && this.props.onPress()
       : this.animate(2, { cb: this.props.onPress });
 
   load = () => this.animate(2, { cb: this.props.onLoad });
