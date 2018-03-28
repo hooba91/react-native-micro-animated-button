@@ -1,5 +1,7 @@
 # react-native-micro-animated-button
 
+[![npm version](https://badge.fury.io/js/react-native-micro-animated-button.svg)](https://badge.fury.io/js/react-native-micro-animated-button)
+
 <img src="https://raw.githubusercontent.com/sonaye/react-native-micro-animated-button/master/demo.gif" width="400">
 
 # Installation
