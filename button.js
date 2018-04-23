@@ -43,7 +43,9 @@ export default class extends Component {
       ? 0
       : ['success', 'error'].includes(this.props.initialState)
         ? 3
-        : this.props.initialState === 'loading' ? 2 : 1,
+        : this.props.initialState === 'loading'
+          ? 2
+          : 1,
     error: this.props.initialState === 'error'
   };
 
@@ -52,29 +54,12 @@ export default class extends Component {
       ? 0
       : ['success', 'error'].includes(this.props.initialState)
         ? 3
-        : this.props.initialState === 'loading' ? 2 : 1
+        : this.props.initialState === 'loading'
+          ? 2
+          : 1
   );
 
   micro = new Animated.Value(0);
-
-  deprecate = (prop, newProp) => {
-    if (this.props[prop])
-      console.warn(
-        `${prop} has been deprecated${newProp ? ` use ${newProp}` : ''}`
-      );
-  };
-
-  componentWillMount() {
-    this.deprecate('errorColor', 'errorBackgroundColor');
-    this.deprecate('errorIconColor', 'errorForegroundColor');
-    this.deprecate('errorIconName', 'errorIcon');
-    this.deprecate('labelIcon', 'icon');
-    this.deprecate('renderIcon', 'renderErrorIcon and renderSuccessIcon');
-    this.deprecate('shouldExpandOnFinish', 'expandOnFinish');
-    this.deprecate('successColor', 'successBackgroundColor');
-    this.deprecate('successIconColor', 'successForegroundColor');
-    this.deprecate('successIconName', 'successIcon');
-  }
 
   componentWillReceiveProps(nextProps) {
     const { disabled } = this.props;
@@ -145,10 +130,11 @@ export default class extends Component {
   width = this.animated.interpolate({
     inputRange: [0, 1, 2, 3],
     outputRange: [
-      this.props.maxWidth,
-      this.props.maxWidth,
-      this.props.minWidth,
-      this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth
+      this.props.width || this.props.maxWidth,
+      this.props.width || this.props.maxWidth,
+      this.props.width || this.props.minWidth,
+      this.props.width ||
+        (this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth)
     ]
   });
 

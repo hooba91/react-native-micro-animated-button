@@ -34,6 +34,7 @@ type button = {
   labelStyle?: Object,              // default = defaultLabelStyle
   maxWidth?: number,                // default = 240
   minWidth?: number,                // default = 40
+  width?: number,                   // default = 240, overwrites maxWidth and minWidth, use for fixed length
   noFill?: boolean,                 // default = false
   noRadius?: boolean,               // default = false
   onError?: Function,               // default = () => null
@@ -80,7 +81,7 @@ button.success(); // Animates button to success state
 ## Examples
 
 ```javascript
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Platform, ScrollView, StatusBar, Text, View } from 'react-native';
 
 import Btn from 'react-native-micro-animated-button';
@@ -146,6 +147,7 @@ const Example2 = () => (
       ref={ref => (this.b4 = ref)}
       successBackgroundColor={colors.green}
       successIcon="thumbs-up"
+      width={240}
     />
 
     <Btn
@@ -160,6 +162,7 @@ const Example2 = () => (
       ref={ref => (this.b5 = ref)}
       successBackgroundColor={colors.green}
       successIcon="thumbs-up"
+      width={240}
     />
   </View>
 );
@@ -173,41 +176,48 @@ const Example3 = () => (
       errorIcon="warning"
       foregroundColor={colors.white}
       label="Simulate an error"
-      minWidth={240}
       onPress={() => this.b6.error()}
       ref={ref => (this.b6 = ref)}
       shakeOnError
+      width={240}
     />
 
     <Btn
       backgroundColor={colors.blue}
       foregroundColor={colors.white}
       label="Smile at me"
-      minWidth={240}
       onPress={() => this.b7.success()}
       ref={ref => (this.b7 = ref)}
       scaleOnSuccess
       successBackgroundColor={colors.green}
       successForegroundColor={colors.white}
       successIcon="smile-o"
+      width={240}
     />
   </View>
 );
 
-class Example4 extends Component {
+class Example4 extends PureComponent {
   state = { disabled: true };
+
+  onPress = () => this.setState({ disabled: !this.state.disabled });
 
   render() {
     return (
       <View style={styles.center}>
-        <Btn disabled={this.state.disabled} label="Disabled Button" noRadius />
-
         <Btn
           backgroundColor={colors.blue}
           foregroundColor={colors.white}
           label="Static Button"
           noRadius
-          onPress={() => this.setState({ disabled: !this.state.disabled })}
+          onPress={this.onPress}
+          static
+        />
+
+        <Btn
+          disabled={this.state.disabled}
+          label="Disabled Button"
+          noRadius
           static
         />
       </View>
@@ -215,8 +225,13 @@ class Example4 extends Component {
   }
 }
 
-class Example5 extends Component {
+class Example5 extends PureComponent {
   state = { clicked: false };
+
+  onPress = () => this.setState({ clicked: true }, () => this.b8.success());
+
+  onSecondaryPress = () =>
+    this.setState({ clicked: false }, () => this.b8.reset());
 
   render() {
     return (
@@ -225,12 +240,8 @@ class Example5 extends Component {
           foregroundColor={colors.blue}
           icon="cloud-download"
           noFill
-          onPress={() =>
-            this.setState({ clicked: true }, () => this.b8.success())
-          }
-          onSecondaryPress={() =>
-            this.setState({ clicked: false }, () => this.b8.reset())
-          }
+          onPress={this.onPress}
+          onSecondaryPress={this.onSecondaryPress}
           ref={ref => (this.b8 = ref)}
           successBackgroundColor={colors.blue}
           successIcon="remove"
