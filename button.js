@@ -127,14 +127,14 @@ export default class extends Component {
     ]
   });
 
-  width = this.animated.interpolate({
+  width = this.props.width ||
+  this.animated.interpolate({
     inputRange: [0, 1, 2, 3],
     outputRange: [
-      this.props.width || this.props.maxWidth,
-      this.props.width || this.props.maxWidth,
-      this.props.width || this.props.minWidth,
-      this.props.width ||
-        (this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth)
+      this.props.maxWidth,
+      this.props.maxWidth,
+      this.props.minWidth,
+      this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth
     ]
   });
 
