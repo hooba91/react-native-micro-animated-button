@@ -23,6 +23,7 @@ type button = {
   errorBackgroundColor: string,     // default = red
   errorForegroundColor?: string,    // default = white
   errorIcon: string,
+  errorLabel: string,
   expandOnFinish?: boolean,         // default = false
   foregroundColor?: string,         // default = blue
   icon?: string,                    // default = icons names from FontAwesome
@@ -55,6 +56,7 @@ type button = {
   successBackgroundColor?: string,  // default = green
   successForegroundColor?: string   // default = white
   successIcon: string,
+  successLabel: string,
 };
 
 const defaultStyle = {

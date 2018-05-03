@@ -38,26 +38,20 @@ export default class extends Component {
     successIcon: 'check'
   };
 
+  initialStep = this.props.disabled
+    ? 0
+    : ['success', 'error'].includes(this.props.initialState)
+      ? 3
+      : this.props.initialState === 'loading'
+        ? 2
+        : 1;
+
   state = {
-    step: this.props.disabled
-      ? 0
-      : ['success', 'error'].includes(this.props.initialState)
-        ? 3
-        : this.props.initialState === 'loading'
-          ? 2
-          : 1,
+    step: this.initialStep,
     error: this.props.initialState === 'error'
   };
 
-  animated = new Animated.Value(
-    this.props.disabled
-      ? 0
-      : ['success', 'error'].includes(this.props.initialState)
-        ? 3
-        : this.props.initialState === 'loading'
-          ? 2
-          : 1
-  );
+  animated = new Animated.Value(this.initialStep);
 
   micro = new Animated.Value(0);
 
@@ -195,11 +189,17 @@ export default class extends Component {
       micro: this.microShake
     });
 
-  Icon = Animated.createAnimatedComponent(this.props.iconSet || FontAwesome);
+  animatedIcon = Animated.createAnimatedComponent(
+    this.props.iconSet || FontAwesome
+  );
 
-  renderIcon = (name, color) => (
-    <this.Icon
-      name={name}
+  renderLabel = (label, style) => (
+    <Animated.Text style={style}>{label}</Animated.Text>
+  );
+
+  renderIcon = (icon, color) => (
+    <this.animatedIcon
+      name={icon}
       size={this.props.iconSize}
       style={[{ color }, this.props.iconStyle]}
     />
@@ -211,6 +211,7 @@ export default class extends Component {
       bounce,
       disabled,
       errorIcon,
+      errorLabel,
       foregroundColor,
       icon,
       label,
@@ -222,7 +223,8 @@ export default class extends Component {
       renderLabel,
       renderSuccessIcon,
       style,
-      successIcon
+      successIcon,
+      successLabel
     } = this.props;
 
     const { step, error } = this.state;
@@ -238,18 +240,18 @@ export default class extends Component {
       width
     } = this;
 
-    const AnimatedBackgroundColor = error
+    const animatedBackgroundColor = error
       ? errorBackgroundColor
       : successBackgroundColor;
 
-    const AnimatedForegroundColor = error
+    const animatedForegroundColor = error
       ? errorForegroundColor
       : successForegroundColor;
 
     const buttonStyle = [
       {
-        backgroundColor: AnimatedBackgroundColor,
-        borderColor: AnimatedForegroundColor,
+        backgroundColor: animatedBackgroundColor,
+        borderColor: animatedForegroundColor,
         transform: [error ? { translateX: shake } : { scale }],
         width
       },
@@ -259,7 +261,7 @@ export default class extends Component {
     ];
 
     const newLabelStyle = [
-      { color: AnimatedForegroundColor },
+      { color: animatedForegroundColor },
       styles.label,
       labelStyle
     ];
@@ -269,11 +271,9 @@ export default class extends Component {
         {(step === 0 || step === 1) && (
           <View>
             {renderLabel ||
-              (icon ? (
-                this.renderIcon(icon, AnimatedForegroundColor)
-              ) : (
-                <Animated.Text style={newLabelStyle}>{label}</Animated.Text>
-              ))}
+              (icon
+                ? this.renderIcon(icon, animatedForegroundColor)
+                : this.renderLabel(label, newLabelStyle))}
           </View>
         )}
 
@@ -284,10 +284,14 @@ export default class extends Component {
 
         {step === 3 &&
           (error
-            ? renderErrorIcon ||
-              this.renderIcon(errorIcon, errorForegroundColor)
-            : renderSuccessIcon ||
-              this.renderIcon(successIcon, successForegroundColor))}
+            ? errorLabel
+              ? this.renderLabel(errorLabel, newLabelStyle)
+              : renderErrorIcon ||
+                this.renderIcon(errorIcon, errorForegroundColor)
+            : successLabel
+              ? this.renderLabel(successLabel, newLabelStyle)
+              : renderSuccessIcon ||
+                this.renderIcon(successIcon, successForegroundColor))}
       </Animated.View>
     );
 
