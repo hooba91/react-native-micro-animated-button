@@ -49,10 +49,16 @@ export default class MicroAnimatedButton extends Component {
     icon: PropTypes.string,
     iconSet: PropTypes.any,
     iconSize: PropTypes.number,
-    iconStyle: PropTypes.object,
+    iconStyle: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
     initialState: PropTypes.oneOf(['success', 'error', 'loading']),
     label: PropTypes.string,
-    labelStyle: PropTypes.object,
+    labelStyle: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
     material: PropTypes.bool,
     maxWidth: PropTypes.number,
     minWidth: PropTypes.number,
@@ -73,7 +79,10 @@ export default class MicroAnimatedButton extends Component {
     scaleOnSuccess: PropTypes.bool,
     shakeOnError: PropTypes.bool,
     static: PropTypes.bool,
-    style: PropTypes.object,
+    style: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
     successBackgroundColor: PropTypes.string,
     successForegroundColor: PropTypes.string,
     successIcon: PropTypes.string,
