@@ -84,4 +84,4 @@ button.reset();   // Animate button to initial/default state
 
 ## Examples
 
-Available [here](https://raw.githubusercontent.com/sonaye/react-native-micro-animated-button/master/examples.js).
+Available [here](https://github.com/sonaye/react-native-micro-animated-button/blob/master/examples.js).
