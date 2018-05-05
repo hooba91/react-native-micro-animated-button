@@ -13,7 +13,7 @@
 # Definition
 
 ```javascript
-type button = {
+type props = {
   activeOpacity?: number,
   backgroundColor?: string,         // default = white
   bounce?: boolean,                 // default = false
@@ -80,6 +80,16 @@ button.success(); // Animate button to success state
 button.error();   // Animate button to error state
 button.load();    // Animate button to loading state
 button.reset();   // Animate button to initial/default state
+
+// usage
+import Btn from 'react-native-micro-animated-button';
+
+<Btn
+  label="Submit"
+  onPress={() => this.btn.success()}
+  ref={ref => (this.btn = ref)}
+  successIcon="check"
+/>
 ```
 
 ## Examples
