@@ -326,7 +326,7 @@ export default class MicroAnimatedButton extends Component {
   );
 
   animatedIcon = Animated.createAnimatedComponent(
-    this.props.iconSet || this.props.material ? MaterialIcons : FontAwesome
+    this.props.iconSet || (this.props.material ? MaterialIcons : FontAwesome)
   );
 
   renderIcon = (icon, color) => (

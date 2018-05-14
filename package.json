@@ -2,7 +2,7 @@
   "license": "MIT",
   "name": "react-native-micro-animated-button",
   "description": "A stateful button component for React Native.",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "main": "button.js",
   "repository": {
     "type": "git",
