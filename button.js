@@ -18,19 +18,19 @@ import PropTypes from 'prop-types';
 const colors =
   Platform.OS === 'ios'
     ? {
-        blue: '#007aff',
-        gray: '#d8d8d8',
-        green: '#4cd964',
-        red: '#ff3b30',
-        white: '#ffffff'
-      }
+      blue: '#007aff',
+      gray: '#d8d8d8',
+      green: '#4cd964',
+      red: '#ff3b30',
+      white: '#ffffff'
+    }
     : {
-        blue: '#4285f4',
-        gray: '#d8d8d8',
-        green: '#0f9d58',
-        red: '#db4437',
-        white: '#ffffff'
-      };
+      blue: '#4285f4',
+      gray: '#d8d8d8',
+      green: '#0f9d58',
+      red: '#db4437',
+      white: '#ffffff'
+    };
 
 export default class MicroAnimatedButton extends Component {
   static propTypes = {
@@ -148,11 +148,14 @@ export default class MicroAnimatedButton extends Component {
 
   state = {
     step: this.initialStep,
-    error: this.props.initialState === 'error'
+    error: this.props.initialState === 'error',
+    width: this.props.width,
+    maxWidth: this.props.maxWidth
   };
 
   componentWillReceiveProps(nextProps) {
     // auto-animate when disable/enable
+    this.setState({ width: nextProps.width, maxWidth: nextProps.maxWidth });
     const { disabled } = this.props;
     if (nextProps.disabled !== disabled) this.disable(disabled);
   }
@@ -163,16 +166,7 @@ export default class MicroAnimatedButton extends Component {
 
   // animations
 
-  width = this.props.width ||
-  this.animated.interpolate({
-    inputRange: [0, 1, 2, 3],
-    outputRange: [
-      this.props.maxWidth,
-      this.props.maxWidth,
-      this.props.minWidth,
-      this.props.expandOnFinish ? this.props.maxWidth : this.props.minWidth
-    ]
-  });
+
 
   // animation colors
 
@@ -222,11 +216,11 @@ export default class MicroAnimatedButton extends Component {
       foregroundColor || defaultForegroundColor,
       noFill
         ? (success ? successForegroundColor : errorForegroundColor) ||
-          foregroundColor ||
-          defaultForegroundColor
+        foregroundColor ||
+        defaultForegroundColor
         : (success ? successForegroundColor : errorForegroundColor) ||
-          backgroundColor ||
-          defaultBackgroundColor
+        backgroundColor ||
+        defaultBackgroundColor
     ];
   };
 
@@ -372,9 +366,19 @@ export default class MicroAnimatedButton extends Component {
       shake,
       successBackgroundColor,
       successForegroundColor,
-      width
+
     } = this;
 
+    const width = this.state.width ||
+      this.animated.interpolate({
+        inputRange: [0, 1, 2, 3],
+        outputRange: [
+          this.state.maxWidth,
+          this.state.maxWidth,
+          this.props.minWidth,
+          this.props.expandOnFinish ? this.state.maxWidth : this.props.minWidth
+        ]
+      });
     // colors
 
     const animatedBackgroundColor = error
@@ -424,15 +428,15 @@ export default class MicroAnimatedButton extends Component {
         {step === 3 &&
           (error
             ? // if error: render errorLabel > renderErrorIcon() (custom) > errorIcon
-              errorLabel
+            errorLabel
               ? this.renderLabel(errorLabel, labelStyle)
               : renderErrorIcon ||
-                this.renderIcon(errorIcon, errorForegroundColor)
+              this.renderIcon(errorIcon, errorForegroundColor)
             : // if success: render successLabel > renderSuccessIcon() (custom) > successIcon
-              successLabel
+            successLabel
               ? this.renderLabel(successLabel, labelStyle)
               : renderSuccessIcon ||
-                this.renderIcon(successIcon, successForegroundColor))}
+              this.renderIcon(successIcon, successForegroundColor))}
       </Animated.View>
     );
 
